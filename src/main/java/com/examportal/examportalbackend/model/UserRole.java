@@ -1,13 +1,6 @@
 package com.examportal.examportalbackend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -22,11 +15,16 @@ public class UserRole {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="roleId")
     private Role role;
 
     public UserRole() {
+    }
+
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
     }
 
     public Long getUserRoleId() {

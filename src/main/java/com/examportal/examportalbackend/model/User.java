@@ -22,8 +22,7 @@ public class User{
     private Boolean enabled = true;
     private String profile;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL
-            ,fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonIgnore
     public Set<UserRole> userRoles = new HashSet<>();
 

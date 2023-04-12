@@ -12,8 +12,7 @@ public class Role {
     private Long roleId;
     private String roleName;
 
-    @OneToMany(mappedBy = "role",cascade = CascadeType.ALL,fetch = FetchType.EAGER
-            ,orphanRemoval = true)
+    @OneToMany(mappedBy = "role",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
 
     public Role(){
