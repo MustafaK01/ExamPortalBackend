@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User> findUserByUserName(String userName);
-    Optional<Void> deleteUserByUserId(Long userId);
+    void deleteUserByUserId(Long userId);
+    User findUserByUserId(Long userId);
 }

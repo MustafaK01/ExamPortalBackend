@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
-         this.userRepository.deleteUserByUserId(id).orElseThrow(
-                ()->new UserNotFoundException(messageSBUtil.getMessage("USER_NOT_FOUND")));
+        User user = this.userRepository.findUserByUserId(id);
+        if(user!=null) this.userRepository.deleteUserByUserId(user.getUserId());
     }
 }
