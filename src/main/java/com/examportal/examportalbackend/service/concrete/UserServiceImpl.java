@@ -4,15 +4,18 @@ import com.examportal.examportalbackend.core.utils.MessageSBUtil;
 import com.examportal.examportalbackend.core.utils.results.ResultData;
 import com.examportal.examportalbackend.core.utils.results.ResultDataSuccess;
 import com.examportal.examportalbackend.exception.UserAlreadyExistsException;
+import com.examportal.examportalbackend.exception.UserNotFoundException;
 import com.examportal.examportalbackend.model.User;
 import com.examportal.examportalbackend.model.UserRole;
 import com.examportal.examportalbackend.repository.RoleRepository;
 import com.examportal.examportalbackend.repository.UserRepository;
 import com.examportal.examportalbackend.service.abstracts.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -39,5 +42,17 @@ public class UserServiceImpl implements UserService {
             return new ResultDataSuccess<>(this.userRepository.save(user)
                     ,messageSBUtil.getMessage("USER_CREATED"));
         }
+    }
+
+    @Override
+    public ResultData<User> getUserByUserName(String userName) {
+        return new ResultDataSuccess<>(this.userRepository.findUserByUserName(userName).orElseThrow(
+                ()->new UserNotFoundException(messageSBUtil.getMessage("USER_NOT_FOUND"))));
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+         this.userRepository.deleteUserByUserId(id).orElseThrow(
+                ()->new UserNotFoundException(messageSBUtil.getMessage("USER_NOT_FOUND")));
     }
 }

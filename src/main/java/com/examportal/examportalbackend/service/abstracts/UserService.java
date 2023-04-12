@@ -8,6 +8,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    public ResultData<User> createUser(User user, Set<UserRole> userRoles) throws RuntimeException;
-
+     ResultData<User> createUser(User user, Set<UserRole> userRoles) throws RuntimeException;
+     ResultData<User> getUserByUserName(String userName);
+     void deleteUserById(Long id);
 }
