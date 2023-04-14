@@ -31,14 +31,14 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<?> shortUrlNotFoundException(UserAlreadyExistsException e){
         Map<String,String> errors = new HashMap<>();
-        errors.put("Error : ",e.getMessage());
+        errors.put("msg",e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> codeAlreadyExistsException(UserNotFoundException e){
         Map<String,String> errors = new HashMap<>();
-        errors.put("Error : ",e.getMessage());
+        errors.put("msg",e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
 }
