@@ -29,16 +29,24 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> shortUrlNotFoundException(UserAlreadyExistsException e){
+    public ResponseEntity<?> userAlreadyExistsException(UserAlreadyExistsException e){
         Map<String,String> errors = new HashMap<>();
         errors.put("msg",e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> codeAlreadyExistsException(UserNotFoundException e){
+    public ResponseEntity<?> userNotFoundException(UserNotFoundException e){
         Map<String,String> errors = new HashMap<>();
         errors.put("msg",e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<?> invalidTokenException(InvalidTokenException e){
+        Map<String,String> errors = new HashMap<>();
+        errors.put("msg",e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
+    }
+
 }
