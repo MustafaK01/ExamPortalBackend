@@ -6,8 +6,8 @@ import com.examportal.examportalbackend.model.Role;
 import com.examportal.examportalbackend.model.User;
 import com.examportal.examportalbackend.model.UserRole;
 import com.examportal.examportalbackend.service.abstracts.UserService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserService userService;
@@ -28,14 +28,6 @@ public class UserController {
         this.messageSBUtil = messageSBUtil;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ResultData<User>> create(@Valid @RequestBody User user) throws RuntimeException{
-        Role role = new Role(12L,"INSTRUCTOR");
-        UserRole userRole = new UserRole(user,role);
-        Set<UserRole> roles = new HashSet<>();
-        roles.add(userRole);
-        return ResponseEntity.ok(this.userService.createUser(user,roles));
-    }
 
     @GetMapping("/getUser/{username}")
     public ResponseEntity<ResultData<User>> getUser(@Valid @NotEmpty @PathVariable("username") String userName){

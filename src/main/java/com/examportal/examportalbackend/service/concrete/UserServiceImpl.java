@@ -10,7 +10,7 @@ import com.examportal.examportalbackend.model.UserRole;
 import com.examportal.examportalbackend.repository.RoleRepository;
 import com.examportal.examportalbackend.repository.UserRepository;
 import com.examportal.examportalbackend.service.abstracts.UserService;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
