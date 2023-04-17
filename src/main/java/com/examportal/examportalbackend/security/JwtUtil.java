@@ -1,11 +1,14 @@
 package com.examportal.examportalbackend.security;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,44 +17,58 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${app.secret.key}")
-    private String SECRET_KEY;
+    private static final String SECRET_KEY = "2646294A404E635266556A586E3272357538782F413F442A472D4B6150645367566B59703373367639792442264529482B4D6251655468576D5A713474377721";
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String createToken(Map<String, Object> extraClaims,UserDetails userDetails) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
+                .signWith(getSigningKey(),SignatureAlgorithm.HS512)
+                .compact();
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public String generateToken(UserDetails userDetails){
+        return createToken(new HashMap<>(),userDetails);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+
+    private Key getSigningKey(){
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    //This method will get the userName from token
+    public String getUserNameFromJwt(String token){
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return claims.getSubject();
     }
 
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+    boolean validateToken(String token){
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return !tokenExpired(token);
+        }catch (SignatureException e){
+            return false;
+        }catch (MalformedJwtException e){
+            return false;
+        }catch (ExpiredJwtException e){
+            return false;
+        }
     }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+    public Long expirationDate(String token){
+        Date expirate = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        return expirate.getTime();
     }
-
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    private boolean tokenExpired(String token) {
+        Date expirate = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        return expirate.before(new Date());
     }
 
 

@@ -1,8 +1,8 @@
-package com.examportal.examportalbackend.security;
+package com.examportal.examportalbackend.auth;
 
 public class AuthenticationRequest {
-    String userName;
-    String password;
+    private String userName;
+    private String password;
 
     public AuthenticationRequest() {
     }

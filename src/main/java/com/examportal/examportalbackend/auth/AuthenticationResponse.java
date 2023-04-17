@@ -1,8 +1,8 @@
-package com.examportal.examportalbackend.security;
+package com.examportal.examportalbackend.auth;
 
 public class AuthenticationResponse {
 
-    String token;
+    private String token;
 
     public AuthenticationResponse() {
     }
