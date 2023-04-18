@@ -36,9 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String tokenJwt = extractFromReq(request);
-            if (StringUtils.hasText(tokenJwt) && jwtUtil.validateToken(tokenJwt)){
+            if (StringUtils.hasText(tokenJwt)&&jwtUtil.validateToken(tokenJwt)){
                 String userName = jwtUtil.getUserNameFromJwt(tokenJwt);
-                final UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);                //if not null, authenticate it
+                String username = request.getRequestURI().split("/")[4];
+                if(!userName.equals(username)){
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+                final UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
                 if(userDetails!=null){
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());

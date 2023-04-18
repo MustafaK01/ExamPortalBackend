@@ -1,5 +1,6 @@
 package com.examportal.examportalbackend.auth;
 
+import com.examportal.examportalbackend.core.utils.MessageSBUtil;
 import com.examportal.examportalbackend.exception.UserNotFoundException;
 import com.examportal.examportalbackend.model.Role;
 import com.examportal.examportalbackend.model.User;
@@ -25,26 +26,23 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
-    public AuthenticationService(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserRepository userRepository) {
+    private final MessageSBUtil messageSBUtil;
+
+
+    public AuthenticationService(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserRepository userRepository, MessageSBUtil messageSBUtil) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.messageSBUtil = messageSBUtil;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest,String userName) {
+        if(!userName.equals(authenticationRequest.getUserName())) throw new UserNotFoundException(this.messageSBUtil.getMessage("USER_NOT_FOUND"));
         var user = userRepository.findUserByUserName(authenticationRequest.getUserName())
-                .orElseThrow(()-> new UserNotFoundException("User Not Found"));
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName()
-                        ,authenticationRequest.getPassword())));
-        var jwtToken = jwtUtil.generateToken(user);
-        Long expirationDate = jwtUtil.expirationDate(jwtToken);
-        System.out.println(jwtToken);
-        return new AuthenticationResponse(jwtToken);
-
+                .orElseThrow(()-> new UserNotFoundException(this.messageSBUtil.getMessage("USER_NOT_FOUND")));
+        return this.auth(authenticationRequest,user);
     }
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
@@ -59,7 +57,17 @@ public class AuthenticationService {
         roles.add(userRole);
         this.userService.createUser(user,roles);
         var jwtToken = jwtUtil.generateToken(user);
-        return new AuthenticationResponse(jwtToken);
+        Long expirationDate = jwtUtil.expirationDate(jwtToken);
+        return new AuthenticationResponse(jwtToken,expirationDate);
+    }
+
+    private AuthenticationResponse auth(AuthenticationRequest authenticationRequest,User user){
+        SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName()
+                        ,authenticationRequest.getPassword())));
+        var jwtToken = jwtUtil.generateToken(user);
+        Long expirationDate = jwtUtil.expirationDate(jwtToken);
+        return new AuthenticationResponse(jwtToken,expirationDate);
     }
 
 }

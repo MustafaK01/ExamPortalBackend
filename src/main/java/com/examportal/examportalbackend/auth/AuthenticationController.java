@@ -4,12 +4,10 @@ import com.examportal.examportalbackend.security.JwtUtil;
 import com.examportal.examportalbackend.service.abstracts.UserService;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-//@CrossOrigin(origins = "http://localhost:4200")
 @CrossOrigin(origins = "*")
 public class AuthenticationController {
 
@@ -20,9 +18,10 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest authenticationRequest){
-        return ResponseEntity.ok(this.authService.authenticate(authenticationRequest));
+    @PostMapping("/authenticate/{user}")
+    public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest authenticationRequest
+    ,@PathVariable(value = "user") String userName){
+        return ResponseEntity.ok(this.authService.authenticate(authenticationRequest,userName));
     }
 
     @PostMapping("/register")
