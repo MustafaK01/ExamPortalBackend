@@ -24,12 +24,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-    private final MessageSBUtil messageSBUtil;
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil, MessageSBUtil messageSBUtil) {
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
-        this.messageSBUtil = messageSBUtil;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String tokenJwt = extractFromReq(request);
             if (StringUtils.hasText(tokenJwt)&&jwtUtil.validateToken(tokenJwt)){
                 String userName = jwtUtil.getUserNameFromJwt(tokenJwt);
-                String username = request.getRequestURI().split("/")[4];
+                String username = request.getParameter("user");
                 if(!userName.equals(username)){
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
