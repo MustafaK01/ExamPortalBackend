@@ -18,9 +18,9 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
-    @PostMapping("/authenticate/{user}")
+    @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest authenticationRequest
-    ,@PathVariable(value = "user") String userName){
+    ,@RequestParam(name = "user") String userName){
         return ResponseEntity.ok(this.authService.authenticate(authenticationRequest,userName));
     }
 

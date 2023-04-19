@@ -1,6 +1,7 @@
 package com.examportal.examportalbackend.auth;
 
 import com.examportal.examportalbackend.core.utils.MessageSBUtil;
+import com.examportal.examportalbackend.dto.AuthenticatedUserDto;
 import com.examportal.examportalbackend.exception.UserNotFoundException;
 import com.examportal.examportalbackend.model.Role;
 import com.examportal.examportalbackend.model.User;
@@ -11,6 +12,7 @@ import com.examportal.examportalbackend.service.abstracts.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +22,20 @@ import java.util.Set;
 @Service
 public class AuthenticationService {
 
+    private final UserDetailsService userDetailsService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-
     private final MessageSBUtil messageSBUtil;
 
 
-    public AuthenticationService(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserRepository userRepository, MessageSBUtil messageSBUtil) {
+    public AuthenticationService(UserDetailsService userDetailsService, UserService userService
+            , PasswordEncoder passwordEncoder, JwtUtil jwtUtil
+            , AuthenticationManager authenticationManager
+            , UserRepository userRepository, MessageSBUtil messageSBUtil) {
+        this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -67,7 +73,19 @@ public class AuthenticationService {
                         ,authenticationRequest.getPassword())));
         var jwtToken = jwtUtil.generateToken(user);
         Long expirationDate = jwtUtil.expirationDate(jwtToken);
-        return new AuthenticationResponse(jwtToken,expirationDate);
+        return new AuthenticationResponse(
+                jwtToken
+                ,expirationDate
+                ,this.getAuthenticatedUser());
     }
+
+    public AuthenticatedUserDto getAuthenticatedUser() {
+        AuthenticatedUserDto authenticatedUserDto = new AuthenticatedUserDto();
+        User user = (User) this.userDetailsService.loadUserByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        );
+        return authenticatedUserDto.convertToDto(user);
+    }
+
 
 }
