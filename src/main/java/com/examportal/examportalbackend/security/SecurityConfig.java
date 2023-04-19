@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**")
+                .antMatchers("/api/auth/register","/api/auth/authenticate/**")
                 .permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(this.jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);
