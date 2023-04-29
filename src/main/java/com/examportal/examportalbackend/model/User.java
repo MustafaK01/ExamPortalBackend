@@ -30,6 +30,18 @@ public class User implements UserDetails {
     @JsonIgnore
     public Set<UserRole> userRoles = new HashSet<>();
 
+    @OneToOne(mappedBy = "studentId")
+    private Student studentId;
+
+    @OneToOne(mappedBy = "studentName")
+    private Student studentName;
+
+    @OneToOne(mappedBy = "instructorId")
+    private Instructor instructorId;
+
+    @OneToOne(mappedBy = "instructorName")
+    private Instructor instructorName;
+
     public User() {
     }
 
@@ -126,6 +138,40 @@ public class User implements UserDetails {
 
     public void setUserRoles(Set<UserRole> userRoles) {
         this.userRoles = userRoles;
+    }
+
+
+    public void setStudentId(Student studentId) {
+        this.studentId = studentId;
+    }
+
+
+    public void setStudentName(Student studentName) {
+        this.studentName = studentName;
+    }
+
+    public Student getStudentId() {
+        return studentId;
+    }
+
+    public Student getStudentName() {
+        return studentName;
+    }
+
+    public Instructor getInstructorId() {
+        return instructorId;
+    }
+
+    public void setInstructorId(Instructor instructorId) {
+        this.instructorId = instructorId;
+    }
+
+    public Instructor getInstructorName() {
+        return instructorName;
+    }
+
+    public void setInstructorName(Instructor instructorName) {
+        this.instructorName = instructorName;
     }
 
     @Override
