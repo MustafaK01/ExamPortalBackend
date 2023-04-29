@@ -1,5 +1,6 @@
 package com.examportal.examportalbackend.model.exam;
 
+import com.examportal.examportalbackend.model.Instructor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +38,13 @@ public class Quiz {
     @JsonIgnore
     private Set<Question> questionSet = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "instructorId")
+    private Instructor instructor;
+
+    @OneToMany(mappedBy = "quiz",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<SolvedQuiz> solvedQuizzes;
+
     public Quiz() {
     }
 
@@ -48,6 +57,15 @@ public class Quiz {
         this.numOfQuestions = numOfQuestions;
         this.isActive = isActive;
     }
+
+    public Quiz(List<SolvedQuiz> solvedQuizzes) {
+        this.solvedQuizzes = solvedQuizzes;
+    }
+
+    public Quiz(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
 
     public Long getQuizId() {
         return quizId;
@@ -103,5 +121,29 @@ public class Quiz {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Set<Question> getQuestionSet() {
+        return questionSet;
+    }
+
+    public void setQuestionSet(Set<Question> questionSet) {
+        this.questionSet = questionSet;
+    }
+
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
+    public List<SolvedQuiz> getSolvedQuizzes() {
+        return solvedQuizzes;
+    }
+
+    public void setSolvedQuizzes(List<SolvedQuiz> solvedQuizzes) {
+        this.solvedQuizzes = solvedQuizzes;
     }
 }
