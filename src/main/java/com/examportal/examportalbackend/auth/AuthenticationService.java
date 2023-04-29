@@ -65,7 +65,7 @@ public class AuthenticationService {
         return this.auth(authenticationRequest,user);
     }
 
-    public AuthenticationResponse register(RegisterRequest registerRequest) throws IllegalAccessException {
+    public AuthenticationResponse register(RegisterRequest registerRequest) {
             User user = new User();
             user.setUser(registerRequest,user);
             this.userService.createUser(user
