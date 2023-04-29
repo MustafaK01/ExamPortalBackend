@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(
                     messageSBUtil.getMessage("USER_EXISTS"));
         }else{
-            for (UserRole userRole: userRoles) roleRepository.save(userRole.getRole());
             user.getUserRoles().addAll(userRoles);
             return new ResultDataSuccess<>(this.userRepository.save(user)
                     ,messageSBUtil.getMessage("USER_CREATED"));

@@ -37,7 +37,7 @@ public class AuthenticatedUserDto {
         this.authorities = authorities;
     }
 
-    public AuthenticatedUserDto convertToDto(User user){
+    public static AuthenticatedUserDto convertToDto(User user){
         return AuthenticatedUserDto.builder()
                 .userName(user.getUserName())
                 .authorities(user.getAuthorities())

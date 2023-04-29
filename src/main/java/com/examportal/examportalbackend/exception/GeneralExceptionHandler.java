@@ -29,23 +29,32 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<?> userAlreadyExistsException(UserAlreadyExistsException e){
-        Map<String,String> errors = new HashMap<>();
-        errors.put("msg",e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                this.adjustMessages(e));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> userNotFoundException(UserNotFoundException e){
-        Map<String,String> errors = new HashMap<>();
-        errors.put("msg",e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                this.adjustMessages(e));
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<?> invalidTokenException(InvalidTokenException e){
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                this.adjustMessages(e));
+    }
+
+    @ExceptionHandler(InvalidParamException.class)
+    public ResponseEntity<?> invalidParameterException(InvalidParamException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                this.adjustMessages(e));
+    }
+
+    private Map<String, String> adjustMessages(RuntimeException exception){
         Map<String,String> errors = new HashMap<>();
-        errors.put("msg",e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
+        errors.put("msg",exception.getMessage());
+        return errors;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.examportal.examportalbackend.model;
 
+import com.examportal.examportalbackend.auth.RegisterRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -33,14 +34,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "studentId")
     private Student studentId;
 
-    @OneToOne(mappedBy = "studentName")
-    private Student studentName;
-
     @OneToOne(mappedBy = "instructorId")
     private Instructor instructorId;
 
-    @OneToOne(mappedBy = "instructorName")
-    private Instructor instructorName;
 
     public User() {
     }
@@ -145,17 +141,8 @@ public class User implements UserDetails {
         this.studentId = studentId;
     }
 
-
-    public void setStudentName(Student studentName) {
-        this.studentName = studentName;
-    }
-
     public Student getStudentId() {
         return studentId;
-    }
-
-    public Student getStudentName() {
-        return studentName;
     }
 
     public Instructor getInstructorId() {
@@ -166,13 +153,6 @@ public class User implements UserDetails {
         this.instructorId = instructorId;
     }
 
-    public Instructor getInstructorName() {
-        return instructorName;
-    }
-
-    public void setInstructorName(Instructor instructorName) {
-        this.instructorName = instructorName;
-    }
 
     @Override
     public String toString() {
@@ -187,6 +167,18 @@ public class User implements UserDetails {
                 ", enabled=" + enabled +
                 '}';
     }
+
+    public User setUser(RegisterRequest registerRequest,User user){
+        user.setUserName(registerRequest.getUserName());
+        user.setPassword(registerRequest.getPassword());
+        user.setEmail(registerRequest.getEmail());
+        user.setFirstName(registerRequest.getFirstName());
+        user.setLastName(registerRequest.getLastName());
+        user.setPhone(registerRequest.getPhone());
+        user.setEnabled(true);
+        return user;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
