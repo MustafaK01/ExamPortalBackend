@@ -1,6 +1,9 @@
 package com.examportal.examportalbackend.model;
 
+import com.examportal.examportalbackend.model.exam.SolvedQuiz;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="students")
@@ -19,6 +22,10 @@ public class Student{
     @JoinColumn(name = "studentName",referencedColumnName = "userName")
     private User studentName;
 
+    @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<SolvedQuiz> solvedQuizzes;
+
+
     public Student() {
     }
 
@@ -26,6 +33,10 @@ public class Student{
         this.userStudentId = userStudentId;
         this.studentId = studentId;
         this.studentName = studentName;
+    }
+
+    public Student(List<SolvedQuiz> solvedQuizzes) {
+        this.solvedQuizzes = solvedQuizzes;
     }
 
     public Long getId() {
