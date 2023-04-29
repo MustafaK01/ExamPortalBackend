@@ -8,19 +8,20 @@ import java.util.List;
 
 @Entity
 @Table(name="instructors")
-public class Instructor{
+public class Instructor  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userInstructorId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instructorId",referencedColumnName = "userId")
+    @OneToOne
+    @JoinColumn(name = "userId")
     private User instructorId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instructorName",referencedColumnName = "userName")
-    private User instructorName;
+    private String instructorName;
+
+    private String instructorEmail;
+
 
     @OneToMany(mappedBy = "instructor",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonIgnore
@@ -29,10 +30,12 @@ public class Instructor{
     public Instructor() {
     }
 
-    public Instructor(Long userInstructorId, User instructorId, User instructorName) {
+    public Instructor(Long userInstructorId, User instructorId
+            ,String instructorName,String instructorEmail) {
         this.userInstructorId = userInstructorId;
         this.instructorId = instructorId;
         this.instructorName = instructorName;
+        this.instructorEmail = instructorEmail;
     }
 
     public Long getId() {
@@ -51,11 +54,19 @@ public class Instructor{
         this.instructorId = instructorId;
     }
 
-    public User getInstructorName() {
+    public String getInstructorName() {
         return instructorName;
     }
 
-    public void setInstructorName(User instructorName) {
+    public void setInstructorName(String instructorName) {
         this.instructorName = instructorName;
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
     }
 }

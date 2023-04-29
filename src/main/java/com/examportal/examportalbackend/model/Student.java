@@ -18,9 +18,9 @@ public class Student{
     @JoinColumn(name = "studentId",referencedColumnName = "userId")
     private User studentId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "studentName",referencedColumnName = "userName")
-    private User studentName;
+    private String studentEmail;
+    private String studentName;
+
 
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<SolvedQuiz> solvedQuizzes;
@@ -29,9 +29,10 @@ public class Student{
     public Student() {
     }
 
-    public Student(Long userStudentId, User studentId, User studentName) {
+    public Student(Long userStudentId, User studentId,String studentEmail, String studentName) {
         this.userStudentId = userStudentId;
         this.studentId = studentId;
+        this.studentEmail = studentEmail;
         this.studentName = studentName;
     }
 
@@ -52,15 +53,23 @@ public class Student{
         this.studentId = studentId;
     }
 
-    public void setStudentName(User studentName) {
-        this.studentName = studentName;
-    }
-
     public User getStudentId() {
         return studentId;
     }
 
-    public User getStudentName() {
+    public String getStudentEmail() {
+        return studentEmail;
+    }
+
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
+    }
+
+    public String getStudentName() {
         return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 }
