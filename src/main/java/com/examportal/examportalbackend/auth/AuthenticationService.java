@@ -1,7 +1,6 @@
 package com.examportal.examportalbackend.auth;
 
 import com.examportal.examportalbackend.core.utils.MessageSBUtil;
-import com.examportal.examportalbackend.dto.AuthenticatedUserDto;
 import com.examportal.examportalbackend.exception.InvalidParamException;
 import com.examportal.examportalbackend.exception.UserNotFoundException;
 import com.examportal.examportalbackend.model.Role;

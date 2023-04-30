@@ -1,4 +1,4 @@
-package com.examportal.examportalbackend.dto;
+package com.examportal.examportalbackend.auth;
 
 import com.examportal.examportalbackend.model.User;
 import lombok.Builder;

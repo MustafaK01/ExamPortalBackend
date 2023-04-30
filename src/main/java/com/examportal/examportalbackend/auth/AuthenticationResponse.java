@@ -1,6 +1,5 @@
 package com.examportal.examportalbackend.auth;
 
-import com.examportal.examportalbackend.dto.AuthenticatedUserDto;
 
 public class AuthenticationResponse {
 
